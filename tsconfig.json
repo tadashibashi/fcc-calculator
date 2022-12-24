@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "outDir": "./prod/src",
+      "allowJs": true,
+      "target": "es5",
+      "sourceMap": true,
+      "jsx": "react",
+      "lib": ["ES2016", "DOM"],
+      "module": "ES2015",
+      "moduleResolution": "Node",
+      "baseUrl": "node_modules"
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["node_modules", "prod"]
+}
