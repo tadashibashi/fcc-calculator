@@ -31,11 +31,8 @@ export class CalculatorNumber implements Copiable {
     static fromNumber(num: number) {
         if (isNaN(num))
             throw {name: "Conversion Error", message: "Cannot convert to CalculatorNumber from NaN!" };
-        let newNum = new CalculatorNumber(Math.abs(num).toString(), "", num < 0);
 
-        console.log("new number: ", newNum);
-
-        return newNum;
+        return new CalculatorNumber(Math.abs(num).toString(), "", num < 0);
     }
 
     /**

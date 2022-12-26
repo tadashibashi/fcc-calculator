@@ -27,6 +27,38 @@ function DisplayUI(props) {
     );
 }
 
+/**
+ * Gets button id from keyboard key value, or null if it doesn't exist
+ */
+const getButtonId = (function() {
+
+    const CalcIds = {
+        '0': "zero",
+        '1': "one",
+        '2': "two",
+        '3': "three",
+        '4': "four",
+        '5': "five",
+        '6': "six",
+        '7': "seven",
+        '8': "eight",
+        '9': "nine",
+        '=': "equals",
+        "Enter": "equals",
+        '/': "divide",
+        '*': "multiply",
+        '+': "add",
+        '-': "subtract",
+        "Clear": "clear",
+        '.': "decimal"
+    };
+    Object.freeze(CalcIds);
+
+    return function(key: string): string {
+        return CalcIds[key] || null;
+    }
+})();
+
 class CalculatorUI extends React.Component<{}, CalculatorState> {
     calc: Calculator;
 
@@ -37,52 +69,31 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         this.calc = new Calculator;
 
         this.clickHandler = this.clickHandler.bind(this);
-        this.keydownHandler = this.keydownHandler.bind(this);
     }
 
     keydownHandler(ev: KeyboardEvent) {
-        switch(ev.key) {
-            case '0': case '1': case '2': case '3': case '4':
-                case '5': case '6': case '7': case '8': case '9':
-                this.appendChar(Num[ev.key.charCodeAt(0) - '0'.charCodeAt(0)]);
-            break;
+        const id = getButtonId(ev.key);
+        if (id !== null) {
+            document.getElementById(id).click();
+            document.getElementById(id).classList.add("active-state");
+        }     
+    }
 
-            case '.':
-                this.appendChar(Sym.Dot);
-            break;
-
-            case '/':
-                this.appendChar(Sym.Div);
-            break;
-
-            case '*':
-                this.appendChar(Sym.Mult);
-            break;
-
-            case '+':
-                this.appendChar(Sym.Add);
-            break;
-
-            case '-':
-                this.appendChar(Sym.Sub);
-            break;
-
-            case '=': case "Enter":
-                this.calculate();
-            break;
-
-            case "Clear":
-                this.clear();
-            break;
+    keyupHandler(ev: KeyboardEvent) {
+        const id = getButtonId(ev.key);
+        if (id !== null) {
+            document.getElementById(id).classList.remove("active-state");
         }
     }
 
     override componentDidMount() {
         document.addEventListener("keydown", this.keydownHandler);
+        document.addEventListener("keyup", this.keyupHandler);
     }
 
     override componentWillUnmount() {
         document.removeEventListener("keydown", this.keydownHandler);
+        document.removeEventListener("keyup", this.keyupHandler);
     }
 
     appendChar(symbol: KeyDisplay) {
