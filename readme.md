@@ -9,7 +9,7 @@ Please check out the build [here](https://aaronishibashi.com/portfolio/web/calcu
 - React, front-end management
 - TypeScript, JS pre-processor
 - Stylus, CSS pre-processor
-- Jest, tests
+- Jest, unit tests
 - Webpack, bundling
 
 ### Build
