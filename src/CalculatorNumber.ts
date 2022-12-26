@@ -19,6 +19,10 @@ export class CalculatorNumber implements Copiable {
         this.m_negative = negative;
     }
 
+    static get Zero() {
+        return new CalculatorNumber("0", "", false);
+    }
+
     /**
      * Creates a CalculatorNumber object from a number. Static.
      * @param num number to set

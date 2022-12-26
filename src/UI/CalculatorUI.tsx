@@ -37,6 +37,52 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         this.calc = new Calculator;
 
         this.clickHandler = this.clickHandler.bind(this);
+        this.keydownHandler = this.keydownHandler.bind(this);
+    }
+
+    keydownHandler(ev: KeyboardEvent) {
+        switch(ev.key) {
+            case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                this.appendChar(Num[ev.key.charCodeAt(0) - '0'.charCodeAt(0)]);
+            break;
+
+            case '.':
+                this.appendChar(Sym.Dot);
+            break;
+
+            case '/':
+                this.appendChar(Sym.Div);
+            break;
+
+            case '*':
+                this.appendChar(Sym.Mult);
+            break;
+
+            case '+':
+                this.appendChar(Sym.Add);
+            break;
+
+            case '-':
+                this.appendChar(Sym.Sub);
+            break;
+
+            case '=': case "Enter":
+                this.calculate();
+            break;
+
+            case "Clear":
+                this.clear();
+            break;
+        }
+    }
+
+    override componentDidMount() {
+        document.addEventListener("keydown", this.keydownHandler);
+    }
+
+    override componentWillUnmount() {
+        document.removeEventListener("keydown", this.keydownHandler);
     }
 
     appendChar(symbol: KeyDisplay) {
@@ -80,7 +126,7 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         });
     }
 
-    render() {
+    override render() {
 
         return (
             <div id="calculator-border">

@@ -3,7 +3,6 @@ import { Copiable } from "./Interfaces";
 import { CalculatorNumber } from "./CalculatorNumber";
 import { cloneArray, isOperator, isDigit, SymbolKey } from "./Common";
 
-
 // Mutates the calculator number's operator.
 // Then returns a new number to append, whether positive or negative based on input string.
 function interpretInput(current: CalculatorNumber, input: string): CalculatorNumber | null {
@@ -30,6 +29,7 @@ export class Calculator implements Copiable {
 
     constructor() {
         this.reset(true);
+        this.m_result = CalculatorNumber.Zero;
     }
 
     get result() { return this.m_result; }
