@@ -4,13 +4,12 @@ import * as ReactDOM from "react-dom/client";
 import { ButtonUI } from "./ButtonUI";
 import { Calculator } from "../Calculator"
 
-import { KeyDisplay, NumKey as Num, SymbolKey as Sym } from "../Common";
+import { KeyDisplay, NumKey as Num, SymbolKey as Sym, getButtonId, getOS, OS } from "../Common";
 
 interface CalculatorState {
     result: number;
     display: string;
 }
-
 
 function defaultCalculatorState(): CalculatorState {
     return {
@@ -20,44 +19,26 @@ function defaultCalculatorState(): CalculatorState {
 }
 
 function DisplayUI(props) {
+
+    // Choose font size for display. Longer text = smaller size
+    const length = props.display.length;
+    let fontSizeRem = 2.0;
+
+   if (length > 30)
+        fontSizeRem = 1.0;
+    else if (length > 20)
+        fontSizeRem = 1.5;
+    
+    const style = {
+        fontSize: fontSizeRem.toString() + "rem"
+    };
+
     return (
         <div id="display-wrapper">
-            <p id="display">{props.display.length > 0 ? props.display : props.result}</p>
+            <p id="display" style={style}>{props.display}</p>
         </div>
     );
 }
-
-/**
- * Gets button id from keyboard key value, or null if it doesn't exist
- */
-const getButtonId = (function() {
-
-    const CalcIds = {
-        '0': "zero",
-        '1': "one",
-        '2': "two",
-        '3': "three",
-        '4': "four",
-        '5': "five",
-        '6': "six",
-        '7': "seven",
-        '8': "eight",
-        '9': "nine",
-        '=': "equals",
-        "Enter": "equals",
-        '/': "divide",
-        '*': "multiply",
-        '+': "add",
-        '-': "subtract",
-        "Clear": "clear",
-        '.': "decimal"
-    };
-    Object.freeze(CalcIds);
-
-    return function(key: string): string {
-        return CalcIds[key] || null;
-    }
-})();
 
 class CalculatorUI extends React.Component<{}, CalculatorState> {
     calc: Calculator;
@@ -69,9 +50,17 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         this.calc = new Calculator;
 
         this.clickHandler = this.clickHandler.bind(this);
+        this.keydownHandler = this.keydownHandler.bind(this);
     }
 
+    // ===== Input Handling ===================================================
+
     keydownHandler(ev: KeyboardEvent) {
+        let cmdKey = getOS() === OS.MacOS ? ev.metaKey : ev.ctrlKey;
+
+        if (ev.key === 'c' && cmdKey)
+            window.navigator.clipboard.writeText(this.getDisplayText().trim());
+
         const id = getButtonId(ev.key);
         if (id !== null) {
             document.getElementById(id).click();
@@ -85,25 +74,6 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
             document.getElementById(id).classList.remove("active-state");
         }
     }
-
-    override componentDidMount() {
-        document.addEventListener("keydown", this.keydownHandler);
-        document.addEventListener("keyup", this.keyupHandler);
-    }
-
-    override componentWillUnmount() {
-        document.removeEventListener("keydown", this.keydownHandler);
-        document.removeEventListener("keyup", this.keyupHandler);
-    }
-
-    appendChar(symbol: KeyDisplay) {
-        this.calc.appendChar(symbol.Js);
-
-        this.setState({
-                display: this.calc.equationStr(true)
-        });
-    }
-
 
     clickHandler(button: ButtonUI) {
         const char = button.props.symbol;
@@ -119,6 +89,26 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         }
     }
 
+    override componentDidMount() {
+        document.addEventListener("keydown", this.keydownHandler);
+        document.addEventListener("keyup", this.keyupHandler);
+    }
+
+    override componentWillUnmount() {
+        document.removeEventListener("keydown", this.keydownHandler);
+        document.removeEventListener("keyup", this.keyupHandler);
+    }
+
+    // ===== Calculator Actions ===============================================
+
+    appendChar(symbol: KeyDisplay) {
+        this.calc.appendChar(symbol.Js);
+
+        this.setState({
+                display: this.calc.equationStr(true)
+        });
+    }
+
     clear() {
         this.calc.reset(true);
         this.setState({
@@ -126,7 +116,6 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
             display: ""
         });
     }
-
 
     calculate() {
         const result = this.calc.calculate();
@@ -137,11 +126,23 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
         });
     }
 
+    private getDisplayText() {
+        // Set the numbers to display
+        let display: string;
+        if (this.state.display.length > 0) {
+            display = this.state.display;
+        } else {
+            display = isNaN(this.state.result) ? "NaN" : this.state.result.toString();
+        }
+
+        return display;
+    }
+
     override render() {
 
         return (
             <div id="calculator-border">
-                <DisplayUI display={this.state.display} result={isNaN(this.state.result) ? "NaN" : this.state.result}/>
+                <DisplayUI display={this.getDisplayText()} />
                 <ButtonUI id="clear" symbol={Sym.Clear} onClick={this.clickHandler} />
                 <ButtonUI id="divide" symbol={Sym.Div} onClick={this.clickHandler} />
                 <ButtonUI id="multiply" symbol={Sym.Mult} onClick={this.clickHandler} />
@@ -168,7 +169,7 @@ class CalculatorUI extends React.Component<{}, CalculatorState> {
     }
 }
 
-export function render() {
+export function renderApp() {
     const root = ReactDOM.createRoot(document.getElementById("calculator-container"));
     root.render(<CalculatorUI />);
 }

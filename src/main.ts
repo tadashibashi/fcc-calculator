@@ -1,3 +1,3 @@
-import { render } from "./UI/CalculatorUI";
+import { renderApp } from "./UI/CalculatorUI";
 
-render();
+renderApp();

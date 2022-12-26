@@ -61,16 +61,19 @@ h1
     box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.6)
 
 #display-wrapper
-    height: 3rem
+    height: 100%
     background: $display-color
-    padding-right: 1rem
+    padding: 0 1rem
+    display: flex
+    align-items: bottom
 
 #display
     width: 100%
-    display: block
+    margin: auto
     font-size: 2rem
     color: white
-    text-align: right;
+    text-align: right
+    overflow-wrap: break-word
 
 
 
@@ -89,8 +92,6 @@ h1
 
 .btn-square:active, .btn-square.active-state
     background-color: rgb(218, 218, 218) !important
-
-
 
 // Specific Grid Positions
 #display-wrapper

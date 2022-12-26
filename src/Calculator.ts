@@ -53,7 +53,7 @@ export class Calculator implements Copiable {
         }
 
         // Checks if last number is complete, then will append a new one if user begins entering another number  
-        if (this.currentNumber().hasOperator() && this.currentNumber().isValid() && isDigit(char)) {
+        if (this.currentNumber().hasOperator() && this.currentNumber().isValid() && (isDigit(char) || char === '.')) {
             const newNumber = interpretInput(this.currentNumber(), this.m_tempInput);
             this.appendNumber(newNumber);
             this.m_tempInput = "";

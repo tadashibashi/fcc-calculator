@@ -60,3 +60,81 @@ export const NumKey: Array<KeyDisplay> = [
     { Display: 'e', Js: 'E' },
     { Display: 'f', Js: 'F' },
 ];
+
+/**
+ * Gets button id from keyboard key value, or null if it doesn't exist
+ */
+export const getButtonId = (function() {
+
+    const CalcIds = {
+        '0': "zero",
+        '1': "one",
+        '2': "two",
+        '3': "three",
+        '4': "four",
+        '5': "five",
+        '6': "six",
+        '7': "seven",
+        '8': "eight",
+        '9': "nine",
+        '=': "equals",
+        "Enter": "equals",
+        '/': "divide",
+        '*': "multiply",
+        '+': "add",
+        '-': "subtract",
+        "Clear": "clear",
+        '.': "decimal"
+    };
+    Object.freeze(CalcIds);
+
+    return function(key: string): string {
+        return CalcIds[key] || null;
+    }
+})();
+
+export enum OS {
+    Windows = "Windows",
+    MacOS = "MacOS",
+    iOS = "iOS",
+    Android = "Android",
+    Linux = "Linux",
+    Unknown = "Unknown"
+}
+
+// A bit of a hack, gets mainline desktop and mobile platforms
+export const getOS = (function() {
+    let os = null;
+    let platform = window.navigator?.userAgent || window.navigator?.platform;
+    if (platform) {
+        // Windows
+        if      (/Win/.test(platform))
+            os = OS.Windows;
+
+        // Mac
+        else if (/Mac/.test(platform))
+            os = OS.MacOS;
+
+        // Android
+        else if (/Android/.test(platform))
+            os = OS.Android;
+
+        // Linux
+        else if (/Linux/.test(platform))
+            os = OS.Linux;
+
+        // iOS
+        else if (/iPad|iPhone|iPod/.test(platform))
+            os = OS.iOS;
+        
+        // Unknown
+        else
+            os = OS.Unknown;
+    } else {
+        os = OS.Unknown;
+    }
+
+    return function() {
+        return os;
+    }
+})();
