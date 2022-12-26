@@ -1,3 +1,3 @@
-import { Calculator } from "./calculator";
+import { render } from "./UI/CalculatorUI";
 
-Calculator.render();
+render();
