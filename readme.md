@@ -1,7 +1,7 @@
 # Calculator App
 ![Preview Image](./screenshot.png)
 
-This is a calculator app that runs in a web browser, created for a freeCodeCamp front-end APIs certificate assignment. 
+This is a calculator app that runs in a web browser, created for the freeCodeCamp front-end APIs certificate. 
 
 Please check out the build [here](https://aaronishibashi.com/portfolio/web/calculator/)
 
